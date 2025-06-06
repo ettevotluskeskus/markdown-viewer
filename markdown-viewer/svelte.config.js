@@ -16,7 +16,6 @@ const config = {
 		paths: {
 			// 👇 **THIS IS THE KEY CORRECTION** 👇
 			base: process.env.NODE_ENV === 'production' ? '/markdown-viewer' : '',
-			// It should be '/markdown-viewer', not '/hems'
 		},
 		prerender: {
 			entries: ['*', '/courses'],

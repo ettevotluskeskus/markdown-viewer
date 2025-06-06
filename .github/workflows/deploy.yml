@@ -40,11 +40,8 @@ jobs:
         # This will run in ./markdown-viewer due to job defaults
 
       - name: Build SvelteKit app
-        run: npm run build
-        # This will run in ./markdown-viewer due to job defaults
-        env:
-          VITE_STRAPI_URL: ${{ secrets.STRAPI_URL_CLOUD }}
-          # NODE_ENV is usually set to 'production' by GitHub Actions for build steps
+        run: VITE_STRAPI_URL=${{ secrets.STRAPI_URL_CLOUD }} npm run build
+        working-directory: ./markdown-viewer # If you removed job defaults, add this back
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
