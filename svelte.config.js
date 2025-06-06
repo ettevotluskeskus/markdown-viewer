@@ -14,8 +14,7 @@ const config = {
 			strict: true
 		}),
 		paths: {
-			// 👇 **THIS IS THE KEY CORRECTION** 👇
-			base: process.env.NODE_ENV === 'production' ? '/markdown-viewer' : '',
+			base: '/markdown-viewer',
 		},
 		prerender: {
 			entries: ['*', '/courses'],
