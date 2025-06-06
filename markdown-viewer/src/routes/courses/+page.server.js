@@ -1,9 +1,7 @@
 // src/routes/courses/+page.server.js
-import { PUBLIC_STRAPI_URL } from '$env/static/public';
-
 export async function load({ fetch }) {
     try {
-        const baseApiUrl = PUBLIC_STRAPI_URL || 'https://miraculous-dream-206dbd0e97.strapiapp.com';
+        const baseApiUrl = 'https://miraculous-dream-206dbd0e97.strapiapp.com';
         const coursesApiPath = '/api/courses';
         const queryParams = '?fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=content&sort=title:asc';
 
