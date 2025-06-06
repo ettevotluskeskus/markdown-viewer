@@ -1,7 +1,6 @@
 <!-- src/routes/+page.svelte -->
 <script>
-    // You can add a load function later if you want to fetch data specifically for the homepage
-    // For now, let's keep it simple.
+    import { base } from '$app/paths';
 </script>
 
 <svelte:head>
@@ -18,7 +17,7 @@
         You can browse all available courses by visiting the link below:
     </p>
     <p>
-        <a href="/courses" class="button">View All Courses</a>
+        <a href="{base}/courses" class="button">View All Courses</a>
     </p>
 </div>
 
