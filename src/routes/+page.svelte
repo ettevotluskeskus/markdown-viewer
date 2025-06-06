@@ -12,7 +12,7 @@
 <div class="container">
     <h1>Welcome to Your Course Platform!</h1>
     <p>
-        This is the homepage of your application.
+        This is the homepage of your application. TEST
     </p>
     <p>
         You can browse all available courses by visiting the link below:
