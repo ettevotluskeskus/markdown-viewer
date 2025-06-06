@@ -1,0 +1,62 @@
+name: Deploy SvelteKit to GitHub Pages
+
+on:
+  push:
+    branches: ["main"] # Or your default branch
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18" # Or your preferred Node.js version
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build SvelteKit app
+        run: npm run build
+        env:
+          # This is where your Strapi Cloud URL will be injected
+          VITE_STRAPI_URL: ${{ secrets.STRAPI_URL_CLOUD }}
+          # If you set kit.paths.base dynamically, you might need to set an env var for it too
+          # For example, if base: process.env.BASE_PATH || ''
+          # BASE_PATH: /your-repository-name # (Ensure this matches your paths.base setting if dynamic)
+
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        # If kit.paths.base is set, this action might automatically handle it.
+        # If not, ensure your build output structure and paths.base are aligned.
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './build' # This must match 'pages' option in adapter-static
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
