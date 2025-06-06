@@ -15,50 +15,38 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    # Set a default working directory for most steps in this job
-    defaults:
-      run:
-        working-directory: ./markdown-viewer # <<<<<< KEY CHANGE HERE
+   build:
+        runs-on: ubuntu-latest
+        defaults:
+          run:
+            working-directory: ./markdown-viewer
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        # Checkout happens at the repo root, so no working-directory here yet.
+        steps:
+          - name: Checkout
+            uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "18"
-          cache: 'npm'
-          # Specify the path to package-lock.json relative to the repo root
-          cache-dependency-path: ./markdown-viewer/package-lock.json # <<<<<< KEY CHANGE HERE
+          - name: Set up Node.js
+            uses: actions/setup-node@v4
+            with:
+              node-version: "18"
+              cache: 'npm'
+              cache-dependency-path: ./markdown-viewer/package-lock.json
 
-      - name: Install dependencies
-        run: npm ci
-        # This will run in ./markdown-viewer due to job defaults
+          - name: Install dependencies
+            run: npm ci
 
-      - name: Build SvelteKit app
-        run: VITE_STRAPI_URL=${{ secrets.STRAPI_URL_CLOUD }} npm run build
-        working-directory: ./markdown-viewer # If you removed job defaults, add this back
+          - name: Build SvelteKit app
+            run: npm run build # Keep this clean
+            env:
+              # Ensure VITE_ prefixed variables are explicitly set here
+              # This is generally how Vite expects to pick them up for its build process
+              VITE_STRAPI_URL: ${{ secrets.STRAPI_URL_CLOUD }}
+              NODE_ENV: production # Explicitly set NODE_ENV for the build
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
+          - name: Setup Pages
+            uses: actions/configure-pages@v5
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # The path is relative to the REPO ROOT, so it needs to include the subdirectory
-          path: './markdown-viewer/build' # <<<<<< KEY CHANGE HERE (assuming 'build' is output of svelte.config.js)
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          - name: Upload artifact
+            uses: actions/upload-pages-artifact@v3
+            with:
+              path: './markdown-viewer/build'
