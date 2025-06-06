@@ -9,17 +9,17 @@ const config = {
 		adapter: adapter({
 			pages: 'build',
 			assets: 'build',
-			fallback: '404.html', // Or undefined if you don't want/need a specific fallback
+			fallback: '404.html',
 			precompress: false,
 			strict: true
 		}),
 		paths: {
-			// 👇 **THIS IS THE KEY CHANGE** 👇
-			base: process.env.NODE_ENV === 'production' ? '/hems' : '',
+			// 👇 **THIS IS THE KEY CORRECTION** 👇
+			base: process.env.NODE_ENV === 'production' ? '/markdown-viewer' : '',
+			// It should be '/markdown-viewer', not '/hems'
 		},
 		prerender: {
-			entries: ['*', '/courses'], // Ensure your main entry points are listed
-			// SvelteKit will attempt to crawl from these to find dynamic [slug] pages
+			entries: ['*', '/courses'],
 		}
 	}
 };

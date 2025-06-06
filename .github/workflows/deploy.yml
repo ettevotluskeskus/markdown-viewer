@@ -17,38 +17,43 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Set a default working directory for most steps in this job
+    defaults:
+      run:
+        working-directory: ./markdown-viewer # <<<<<< KEY CHANGE HERE
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        # Checkout happens at the repo root, so no working-directory here yet.
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18" # Or your preferred Node.js version
+          node-version: "18"
           cache: 'npm'
+          # Specify the path to package-lock.json relative to the repo root
+          cache-dependency-path: ./markdown-viewer/package-lock.json # <<<<<< KEY CHANGE HERE
 
       - name: Install dependencies
         run: npm ci
+        # This will run in ./markdown-viewer due to job defaults
 
       - name: Build SvelteKit app
         run: npm run build
+        # This will run in ./markdown-viewer due to job defaults
         env:
-          # This is where your Strapi Cloud URL will be injected
           VITE_STRAPI_URL: ${{ secrets.STRAPI_URL_CLOUD }}
-          # If you set kit.paths.base dynamically, you might need to set an env var for it too
-          # For example, if base: process.env.BASE_PATH || ''
-          # BASE_PATH: /your-repository-name # (Ensure this matches your paths.base setting if dynamic)
-
+          # NODE_ENV is usually set to 'production' by GitHub Actions for build steps
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
-        # If kit.paths.base is set, this action might automatically handle it.
-        # If not, ensure your build output structure and paths.base are aligned.
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './build' # This must match 'pages' option in adapter-static
+          # The path is relative to the REPO ROOT, so it needs to include the subdirectory
+          path: './markdown-viewer/build' # <<<<<< KEY CHANGE HERE (assuming 'build' is output of svelte.config.js)
 
   deploy:
     environment:
