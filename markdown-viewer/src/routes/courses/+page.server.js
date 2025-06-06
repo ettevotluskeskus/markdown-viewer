@@ -3,9 +3,8 @@ export async function load({ fetch }) {
     try {
         const baseApiUrl = 'https://miraculous-dream-206dbd0e97.strapiapp.com';
         const coursesApiPath = '/api/courses';
-        const queryParams = '?fields[0]=title&fields[1]=slug&fields[2]=summary&fields[3]=content&sort=title:asc';
 
-        const apiUrl = `${baseApiUrl}${coursesApiPath}${queryParams}`;
+        const apiUrl = `${baseApiUrl}${coursesApiPath}`;
 
         console.log("SVELTEKIT: Attempting to fetch courses from:", apiUrl);
         const response = await fetch(apiUrl);
